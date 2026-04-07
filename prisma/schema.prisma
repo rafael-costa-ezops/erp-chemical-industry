@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model DistributionZone {
+  id        String      @id @default(uuid())
+  name      String
+  code      String      @unique
+  region    String
+  status    ZoneStatus  @default(ACTIVE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  version   Int         @default(1)
+
+  @@map("distribution_zones")
+}
+
+enum ZoneStatus {
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+model OutboxEntry {
+  id          String    @id @default(uuid())
+  eventType   String
+  payload     Json
+  eventId     String    @unique
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("outbox_entries")
+}

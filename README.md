@@ -1,40 +1,63 @@
-# Chemical Industry ERP
+# ERP Chemical Industry
 
-NestJS Clean Architecture implementation for chemical industry logistics.
+Sistema ERP para indústria química com arquitetura limpa (Clean Architecture).
 
-## Module: Logistics Territories
-
-- **Rich Domain Model** with `DistributionZone` entity
-- **Outbox Pattern** for `ZoneContractSuspendedEvent`
-- **Dependency Inversion** (IOutboxPublisher in application layer)
-- **Unit tests** colocated with handlers
-- **Prisma schema** for DistributionZone and OutboxEntry
-
-## Architecture
+## Arquitetura
 
 ```
 src/
-├── domain/           # Entities, Value Objects, Domain Events
-├── application/      # Use Cases, Handlers, Interfaces (DI)
-├── infrastructure/   # Prisma, Outbox Publisher, External Services
-└── presentation/     # Controllers, DTOs
+├── domain/           # Entidades, Eventos, Interfaces de Repositório
+│   ├── entities/
+│   ├── events/
+│   └── repositories/
+├── application/      # Handlers, Casos de Uso, Interfaces
+│   ├── handlers/
+│   └── interfaces/
+└── infrastructure/  # Implementações concretas
+    ├── persistence/
+    └── outbox/
 ```
 
-## Getting Started
+## Padrões Implementados
+
+- **Rich Domain Model**: Entidades com comportamento encapsulado
+- **Outbox Pattern**: Garantia de entrega de eventos
+- **Dependency Inversion**: Interfaces no domínio, implementações na infraestrutura
+
+## Tecnologias
+
+- TypeScript
+- Prisma ORM
+- Jest
+- PostgreSQL
+
+## Início Rápido
 
 ```bash
+# Instalar dependências
 npm install
+
+# Gerar cliente Prisma
 npm run prisma:generate
-npm run prisma:migrate
-npm run start:dev
-```
 
-## Testing
-
-```bash
+# Executar testes
 npm test
+
+# Build
+npm run build
 ```
 
----
+## Estrutura do Domínio
 
-Built with Clean Architecture patterns: Rich Domain, Dependency Inversion, Outbox Pattern
+### Entidade: DistributionZone
+
+```typescript
+const zone = DistributionZone.create({
+  id: 'zone-123',
+  name: 'North Region',
+  code: 'NR-001',
+  region: 'North',
+});
+
+zone.suspend(); // Emite ZONE_CONTRACT_SUSPENDED event
+```
